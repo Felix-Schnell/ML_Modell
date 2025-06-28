@@ -1,0 +1,61 @@
+# 🛠️ Feature Engineering Pipeline
+
+Diese Datei enthält eine vollständige **Datenvorverarbeitungspipeline**, die auf Grundlage der EDA umgesetzt wurde. Ziel ist es, die Rohdaten in ein für Machine Learning geeignetes Format zu bringen – speziell für das Training eines **Autoencoder-Modells**.
+
+---
+
+## 📌 Zweck der Datei
+
+- Automatisierte Aufbereitung der Rohdaten
+- Anwendung von Feature Engineering-Techniken auf:
+  - Haupttransaktionsdaten
+  - Produktinformationen (`products.csv`)
+  - Store-/Standortinformationen (`stores.csv`)
+- Vorbereitung eines bereinigten und transformierten Datensatzes für das Modelltraining
+
+---
+
+## 📦 Anwendungskontext
+
+Diese Pipeline ist speziell dafür gedacht, die Daten für ein **Autoencoder-Modell zur Anomalieerkennung (Fraud Detection)** aufzubereiten.
+
+- Die Datei erzeugt einen Datensatz, der als **Eingabe für den Autoencoder** verwendet werden kann.
+- Sie kann direkt vor dem Training ausgeführt und in das **Modul zur Modellierung integriert** werden.
+
+---
+
+## 📂 Eingabedateien
+
+- Hauptdatensatz mit Transaktionen
+- `products.csv` – Produktmetadaten
+- `stores.csv` – Standortinformationen
+
+---
+
+## ⚙️ Hauptbestandteile der Pipeline
+
+- **Zusammenführung** der Dateien über IDs (Produkt, Store)
+- **Feature Engineering**:
+  - Neue Merkmale (z. B. Produktgruppen, Regionen, Zeitmerkmale)
+  - Berechnung aggregierter Variablen
+- **Transformationen**:
+  - Skalierung numerischer Features
+  - One-Hot-Encoding kategorischer Merkmale
+  - Umgang mit fehlenden Werten
+- **Formatierung des finalen Trainingsinputs**
+
+---
+
+## ✅ Ausgabe
+
+- Ein vollständig vorbereiteter, bereinigter und transformierter DataFrame
+- Kompatibel mit dem **Autoencoder-Trainingsmodul**
+- Optional als `.csv` speicherbar oder direkt in den Modellcode übergebbar
+
+---
+
+## 🧠 Ziel
+
+> Die Pipeline abstrahiert die gesamte Vorbereitung, sodass der Fokus im nächsten Schritt auf dem **Training und der Optimierung des Autoencoders** liegt.
+
+
