@@ -1,0 +1,49 @@
+# 🚨 Streamlit App zur Fraud Detection mit Autoencoder
+
+Diese App dient zur **Erkennung potenziell betrügerischer Transaktionen (Fraud Detection)** mithilfe eines **Autoencoder-Modells** in einer benutzerfreundlichen **Streamlit-Oberfläche**.
+
+---
+
+## 📦 Erforderliche Dateien
+
+Lege **alle folgenden 5 Dateien** in **einen gemeinsamen Ordner** – z. B. `StreamlitApp/`:
+
+- `streamlit_app.py` – Hauptdatei zum Starten der Web-App
+- `autoencoder_model.h5` – Trainiertes Autoencoder-Modell (HDF5)
+- `xgboost_model.pkl` – Optionales Vergleichsmodell (XGBoost)
+- `scaler.pkl` – Skalierungsobjekt zur Normalisierung der Daten
+- `feature_names.pkl` – Liste der erwarteten Feature-Namen
+
+---
+
+## 🗂️ Beispiel: Ordnerstruktur
+
+StreamlitApp/
+│
+├── streamlit_app.py
+├── autoencoder_model.h5
+├── xgboost_model.pkl
+├── scaler.pkl
+└── feature_names.pkl
+
+---
+
+## 🚀 Start der App
+
+1. 📁 **Ordner erstellen** – z. B.:
+   ```bash
+   C:\Users\DeinName\Desktop\StreamlitApp
+
+2. Alle 5 Dateien in diesen Ordner legen
+
+3. 💻 Terminal/Anaconda Prompt öffnen und ins Verzeichnis wechseln:
+cd C:\Users\DeinName\Desktop\StreamlitApp
+
+4. App starten mit:
+streamlit run streamlit_app.py
+(Alternative, je nach installation von Pyhon)
+python -m streamlit run streamlit_app.py
+
+5.
+Die App öffnet sich automatisch im Browser unter:
+http://localhost:8501
