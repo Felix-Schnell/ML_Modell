@@ -47,3 +47,8 @@ python -m streamlit run streamlit_app.py
 5.
 Die App öffnet sich automatisch im Browser unter:
 http://localhost:8501
+
+Vorraussetzung:
+Python 3.7+
+pip install streamlit pandas scikit-learn keras xgboost
+
