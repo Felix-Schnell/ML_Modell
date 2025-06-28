@@ -17,7 +17,7 @@ Diese Datei dient der **explorativen Datenanalyse (EDA)** der Trainingsdaten und
 
 ## 📂 Eingabedateien
 
-- `train.csv` – Hauptdatensatz mit Transaktionen/Fraud-Labels
+- Hauptdatensatz mit Transaktionen/Fraud-Labels
 - `products.csv` – Zusatzinformationen zu Produkten
 - `stores.csv` – Zusatzinformationen zu Filialen oder Verkaufsorten
 
