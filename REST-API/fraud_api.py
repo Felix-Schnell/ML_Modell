@@ -15,23 +15,35 @@ app = FastAPI()
 API_VERSION = "1.2.3"
 THRESHOLD = 0.4
 
-# === Globale Variablen (Lazy Loading) ===
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 scaler = None
 xgb_model = None
 feature_names = None
 autoencoder = None
 encoder = None
 
-# === Modelle erst beim App-Start laden ===
-@app.on_event("startup")
-def load_models():
+def load_all_models():
     global scaler, xgb_model, feature_names, autoencoder, encoder
-    scaler = joblib.load("scaler.pkl")
-    xgb_model = joblib.load("xgboost_model.pkl")
-    feature_names = joblib.load("feature_names.pkl")
-    autoencoder = load_model("autoencoder_model.h5", compile=False)
+    scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
+    xgb_model = joblib.load(os.path.join(BASE_DIR, "xgboost_model.pkl"))
+    feature_names = joblib.load(os.path.join(BASE_DIR, "feature_names.pkl"))
+    autoencoder = load_model(os.path.join(BASE_DIR, "autoencoder_model.h5"), compile=False)
     autoencoder.compile(optimizer='adam', loss=MeanSquaredError())
     encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer(index=-2).output)
+
+# Für die App (Startup Event)
+@app.on_event("startup")
+def startup_event():
+    load_all_models()
+
+# Für Tests: direkt beim Import ausführen
+if scaler is None:
+    load_all_models()
+
+
 
 
 # === Pydantic-Modelle ===
@@ -125,18 +137,31 @@ def health_check():
 @app.post("/fraud-prediction", response_model=PredictionResponse)
 def predict_fraud(payload: TransactionRequest):
     try:
+        print("feature_names:", feature_names)
+        print("Payload received:", payload)
+
         input_df = extract_features(payload)
+        print("Extracted features:\n", input_df)
 
         base_features = [f for f in feature_names if not f.startswith("ae_feat_")]
         ae_features = [f for f in feature_names if f.startswith("ae_feat_")]
+
+        print("Base features:", base_features)
+        print("AE features:", ae_features)
+        print("Input_df columns:", input_df.columns)
 
         X_base = pd.DataFrame(0, index=[0], columns=base_features)
         for col in input_df.columns:
             if col in X_base.columns:
                 X_base[col] = input_df[col]
 
+        print("X_base columns:", X_base.columns)
+
         X_base_scaled = scaler.transform(X_base)
+        print("X_base scaled shape:", X_base_scaled.shape)
+
         ae_array = encoder.predict(X_base_scaled)
+        print("AE array:", ae_array)
 
         X_input = pd.DataFrame(0, index=[0], columns=feature_names)
         X_input[base_features] = X_base
@@ -169,4 +194,7 @@ def predict_fraud(payload: TransactionRequest):
         )
 
     except Exception as e:
+        print("Fehler bei der Vorhersage:", e)
         raise HTTPException(status_code=500, detail=f"Fehler bei der Vorhersage: {e}")
+
+
