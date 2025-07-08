@@ -17,13 +17,12 @@ Starten:
 py -m uvicorn fraud_api:app --reload
 
 ### 🔌 Endpoint
-POST /fraud-prediction
-Die API ist lokal erreichbar unter:
-http://127.0.0.1:8000/fraud-prediction
+REST-API Endpoint
+URL lokal: http://127.0.0.1:8000/fraud-prediction
+Dokumentation & Test-UI: http://127.0.0.1:8000/docs
 
-
-
-
+Diese Schnittstelle erwartet JSON-Daten im spezifizierten Format (siehe Beispiel weiter unten)
+und liefert eine Vorhersage, ob eine Transaktion betrügerisch ist, inklusive Wahrscheinlichkeiten und Erklärungen
 
 ### Zweck der API
 
