@@ -54,3 +54,15 @@ json_data = {
   ]
 }
 
+{
+  "version": "1.2.3",
+  "is_fraud": true,
+  "fraud_proba": 0.823479,
+  "estimated_damage": 9.53,
+  "explanation": {
+    "human_readable_reason": "Low camera certainty on products; High transaction amount",
+    "offending_products": ["PERSONAL CARE"]
+  }
+}
+
+
