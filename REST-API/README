@@ -40,13 +40,13 @@ Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesp
 
 ### Beispiel-Request (Python)
 
-json_data = {
+{
   "transaction_header": {
     "store_id": "c1f5d15e-baf6-41e2-890a-135c24cf4c32",
-    "cash_desk": 2,
+    "cash_desk": 5,
     "transaction_start": "2025-07-08T12:00:00",
-    "transaction_end": "2025-07-08T12:01:30",
-    "total_amount": 42.75,
+    "transaction_end": "2025-07-08T12:05:20",
+    "total_amount": 44.25,
     "payment_medium": "CASH",
     "customer_feedback": 4
   },
@@ -56,10 +56,10 @@ json_data = {
       "product_id": "f20c1a10-3c51-4a91-9f80-4563a7e157bc",
       "timestamp": "2025-07-08T12:00:10",
       "pieces_or_weight": 1,
-      "sales_price": 18.50,
-      "was_voided": false,
+      "sales_price": 20,
+      "was_voided": true,
       "camera_product_similar": true,
-      "camera_certainty": 0.6
+      "camera_certainty": 0.65
     },
     {
       "id": 2,
@@ -69,19 +69,23 @@ json_data = {
       "sales_price": 24.25,
       "was_voided": false,
       "camera_product_similar": true,
-      "camera_certainty": 0.65
+      "camera_certainty": 0.05
     }
   ]
 }
 
+Erwartete Ausgabe
+
 {
   "version": "1.2.3",
   "is_fraud": true,
-  "fraud_proba": 0.823479,
-  "estimated_damage": 9.53,
+  "fraud_proba": 0.56223,
+  "estimated_damage": 9.86,
   "explanation": {
     "human_readable_reason": "Low camera certainty on products; High transaction amount",
-    "offending_products": ["PERSONAL CARE"]
+    "offending_products": [
+      "PERSONAL CARE"
+    ]
   }
 }
 
