@@ -24,6 +24,14 @@ Dokumentation & Test-UI: http://127.0.0.1:8000/docs
 Diese Schnittstelle erwartet JSON-Daten im spezifizierten Format (siehe Beispiel weiter unten)
 und liefert eine Vorhersage, ob eine Transaktion betrügerisch ist, inklusive Wahrscheinlichkeiten und Erklärungen
 
+Um es auszuführen:
+- POST /fraud-prediction ausklappen
+- "Try it out" klicken
+- Einen Value eintragen
+- Execute klicken
+
+etwas weiter unten steht die Ausgabe
+
 ### Zweck der API
 
 Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesprochen zu werden**, z. B. aus anderen Python-Programmen, Test-Skripten oder Tools.  
