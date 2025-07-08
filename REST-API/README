@@ -1,3 +1,13 @@
+Projektstruktur und Ablage der Dateien
+Alle für die REST-API und die zugehörigen Tests relevanten Dateien sollten im Ordner REST-API/ liegen:
+REST-API/
+├── fraud_api.py            # Haupt-API mit FastAPI
+├── test_fraud_api.py       # Testskript mit Pytest für die API
+├── scaler.pkl              # Gespeicherter StandardScaler
+├── xgboost_model.pkl       # Gespeichertes XGBoost-Modell
+├── feature_names.pkl       # Liste der Feature-Namen
+├── autoencoder_model.h5    # Keras Autoencoder Modell
+
 ## REST-API zur automatisierten Betrugserkennung
 
 Dieses Projekt enthält eine voll funktionsfähige REST-Programmierschnittstelle (API), die es ermöglicht, Betrugswahrscheinlichkeiten für Kassentransaktionen automatisiert über HTTP-Requests zu berechnen – unabhängig von der Streamlit-Oberfläche.
@@ -10,6 +20,9 @@ py -m uvicorn fraud_api:app --reload
 POST /fraud-prediction
 Die API ist lokal erreichbar unter:
 http://127.0.0.1:8000/fraud-prediction
+
+
+
 
 
 ### Zweck der API
@@ -65,4 +78,18 @@ json_data = {
   }
 }
 
+API Testen mit test_fraud_api.py
+Das Testskript test_fraud_api.py enthält automatisierte Tests, die überprüfen, ob die API erwartungsgemäß auf Anfragen reagiert.
 
+Nutzung:
+Stelle sicher, dass die REST-API nicht separat gestartet ist (die Tests importieren die API intern).
+
+Starte die Tests mit:
+py -m pytest test_fraud_api.py
+Das Skript sendet Beispielanfragen an die API-Funktion und vergleicht die Antwort mit den Erwartungen.
+Pürft, ob die API mit HTTP 200 antwortet.
+
+Zweck:
+Sicherstellen, dass die API korrekt funktioniert und keine Fehler wirft.
+
+Automatisierte Qualitätssicherung vor Deployment oder Abgabe.
