@@ -15,3 +15,6 @@ Dieses Projekt beinhaltet eine REST-API zur Betrugserkennung, eine Streamlit-App
 | `DeepLearning_Bottleneck_32...`  | Autoencoder-Training mit Stop-Kriterium      | Google Colab |
 
 ---
+Die requirements sind als txt Datein einzusehen
+Diese lassen sich in der Konsole installieren
+pip install -r requirements_lokal.txt
