@@ -81,7 +81,7 @@ API Testen mit test_fraud_api.py
 Das Testskript test_fraud_api.py enthält automatisierte Tests, die überprüfen, ob die API erwartungsgemäß auf Anfragen reagiert.
 
 Nutzung:
-Stelle sicher, dass die REST-API nicht separat gestartet ist (die Tests importieren die API intern).
+Stelle sicher, dass die REST-API nicht gestartet wurde. Der Test startet es von selbst und prüft ob es funktioniert.
 
 Testen der API
 Die REST-API kann sowohl automatisiert als auch manuell getestet werden:
