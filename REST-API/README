@@ -1,2 +1,56 @@
-Dies kann lokal gespeichert werden und getestet werden
+## REST-API zur automatisierten Betrugserkennung
+
+Dieses Projekt enthält eine voll funktionsfähige REST-Programmierschnittstelle (API), die es ermöglicht, Betrugswahrscheinlichkeiten für Kassentransaktionen automatisiert über HTTP-Requests zu berechnen – unabhängig von der Streamlit-Oberfläche.
+
+Starten:
+
 py -m uvicorn fraud_api:app --reload
+
+### 🔌 Endpoint
+POST /fraud-prediction
+Die API ist lokal erreichbar unter:
+http://127.0.0.1:8000/fraud-prediction
+
+
+### Zweck der API
+
+Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesprochen zu werden**, z. B. aus anderen Python-Programmen, Test-Skripten oder Tools.  
+
+---
+
+### Beispiel-Request (Python)
+
+json_data = {
+  "transaction_header": {
+    "store_id": "c1f5d15e-baf6-41e2-890a-135c24cf4c32",
+    "cash_desk": 2,
+    "transaction_start": "2025-07-08T12:00:00",
+    "transaction_end": "2025-07-08T12:01:30",
+    "total_amount": 42.75,
+    "payment_medium": "CASH",
+    "customer_feedback": 4
+  },
+  "transaction_lines": [
+    {
+      "id": 1,
+      "product_id": "f20c1a10-3c51-4a91-9f80-4563a7e157bc",
+      "timestamp": "2025-07-08T12:00:10",
+      "pieces_or_weight": 1,
+      "sales_price": 18.50,
+      "was_voided": false,
+      "camera_product_similar": true,
+      "camera_certainty": 0.6
+    },
+    {
+      "id": 2,
+      "product_id": "87412601-4aa6-4c00-84f2-5f3ad2aa67cd",
+      "timestamp": "2025-07-08T12:00:45",
+      "pieces_or_weight": 1,
+      "sales_price": 24.25,
+      "was_voided": false,
+      "camera_product_similar": true,
+      "camera_certainty": 0.65
+    }
+  ]
+}
+
