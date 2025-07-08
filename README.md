@@ -16,5 +16,6 @@ Dieses Projekt beinhaltet eine REST-API zur Betrugserkennung, eine Streamlit-App
 
 ---
 Die requirements sind als txt Datein einzusehen
-Diese lassen sich in der Konsole installieren
-pip install -r requirements_lokal.txt
+Installationshinweis:
+Um die erforderlichen Python Pakete die in der requirements.txt Datei aufgeführt sind zu installieren, verwende den Befehl in der Konsole
+Pip install -r requirements_local.txt
