@@ -1,0 +1,2 @@
+Dies kann lokal gespeichert werden und getestet werden
+py -m uvicorn fraud_api:app --reload
