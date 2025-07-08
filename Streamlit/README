@@ -52,3 +52,38 @@ Vorraussetzung:
 Python 3.7+
 pip install streamlit pandas scikit-learn keras xgboost
 
+### 🧾 CSV-Format für Streamlit-Upload")
+
+    """
+    Die Streamlit-App erwartet eine CSV-Datei im Format von `df_model_ready_test.csv`,  
+    das in der Datei `Fertige_Pipeline.ipynb` bzw. in der Modellpipeline generiert wird.
+
+    #### Benötigte Spalten:
+    - `sales_price_sum_x`  
+    - `sales_price_mean_x`  
+    - `sales_price_max_x`  
+    - `camera_certainty_mean_x`  
+    - `camera_certainty_min_x`  
+    - `was_voided_sum_x`  
+    - `category_nunique_x`  
+    - `sold_by_weight_sum_x`  
+    - `age_restricted_sum_x`  
+    - `opening_date`  
+    - `has_cash_payment`  
+    - `average_price_per_article`  
+    - `transaction_duration_seconds`  
+    - `articles_per_minute`  
+    - `voided_articles_ratio`  
+    - `hour`  
+    - `weekday`  
+    - `snack_count`  
+    - `snack_share`
+
+    > ⚠️ Hinweis: Der Dateiname spielt keine Rolle – wichtig ist, dass die Spalten exakt so heißen und mit denen übereinstimmen, die vom Modell erwartet werden.
+    """
+    ⚠️ Damit die Analyse funktioniert, muss die Datei `Fertige_Pipeline.ipynb` einmal korrekt ausgeführt worden sein,  
+    da sie die benötigten Features und Modellstrukturen erstellt.  
+    Die resultierende Datei `df_model_ready_test.csv` (bzw. ein Teil davon) kann dann in Streamlit verwendet werden.
+    """
+)
+
