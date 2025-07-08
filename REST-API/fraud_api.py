@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
 import uuid
 import joblib
@@ -9,20 +9,29 @@ from tensorflow.keras.models import load_model, Model
 from tensorflow.keras.losses import MeanSquaredError
 from datetime import datetime
 
-# === Modelle & Hilfsdaten laden ===
-scaler = joblib.load("scaler.pkl")
-xgb_model = joblib.load("xgboost_model.pkl")
-feature_names = joblib.load("feature_names.pkl")
-autoencoder = load_model("autoencoder_model.h5", compile=False)
-autoencoder.compile(optimizer='adam', loss=MeanSquaredError())
-
-# Encoder aus dem Autoencoder extrahieren
-encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer(index=-2).output)
-
 app = FastAPI()
 
+# === Konfiguration ===
 API_VERSION = "1.2.3"
-THRESHOLD = 0.4  # kann angepasst werden
+THRESHOLD = 0.4
+
+# === Globale Variablen (Lazy Loading) ===
+scaler = None
+xgb_model = None
+feature_names = None
+autoencoder = None
+encoder = None
+
+# === Modelle erst beim App-Start laden ===
+@app.on_event("startup")
+def load_models():
+    global scaler, xgb_model, feature_names, autoencoder, encoder
+    scaler = joblib.load("scaler.pkl")
+    xgb_model = joblib.load("xgboost_model.pkl")
+    feature_names = joblib.load("feature_names.pkl")
+    autoencoder = load_model("autoencoder_model.h5", compile=False)
+    autoencoder.compile(optimizer='adam', loss=MeanSquaredError())
+    encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer(index=-2).output)
 
 
 # === Pydantic-Modelle ===
@@ -106,7 +115,7 @@ def extract_features(data: TransactionRequest) -> pd.DataFrame:
     return pd.DataFrame([features])
 
 
-# === API Endpoints ===
+# === API-Routen ===
 
 @app.get("/")
 def health_check():
@@ -121,13 +130,11 @@ def predict_fraud(payload: TransactionRequest):
         base_features = [f for f in feature_names if not f.startswith("ae_feat_")]
         ae_features = [f for f in feature_names if f.startswith("ae_feat_")]
 
-        # Base Features
         X_base = pd.DataFrame(0, index=[0], columns=base_features)
         for col in input_df.columns:
             if col in X_base.columns:
                 X_base[col] = input_df[col]
 
-        # Autoencoder-Features
         X_base_scaled = scaler.transform(X_base)
         ae_array = encoder.predict(X_base_scaled)
 
@@ -142,7 +149,7 @@ def predict_fraud(payload: TransactionRequest):
 
         explanation = None
         if is_fraud:
-            offending_products = ["PERSONAL CARE"]  # hier könntest du auch logik aus SHAP einbauen
+            offending_products = ["PERSONAL CARE"]
             reason = []
             if np.mean([l.camera_certainty for l in payload.transaction_lines]) < 0.8:
                 reason.append("Low camera certainty on products")
