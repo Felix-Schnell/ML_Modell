@@ -41,7 +41,7 @@ scaler = load_scaler()
 
 # === Dateiupload ===
 st.header("1. Testdaten hochladen")
-uploaded_file = st.file_uploader("Bitte lade eine vorbereitete Test-CSV hoch, welche in dem Code der Fertigen_Pipeline erstellt wurden. Es wurd dieses Format benoetigt", type="csv")
+uploaded_file = st.file_uploader("Bitte lade eine vorbereitete Test-CSV hoch, welche in dem Code der Fertigen_Pipeline erstellt wurden. Es wird dieses Format benoetigt", type="csv")
 
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
