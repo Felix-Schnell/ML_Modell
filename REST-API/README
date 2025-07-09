@@ -1,3 +1,13 @@
+Projektstruktur und Ablage der Dateien
+Alle für die REST-API und die zugehörigen Tests relevanten Dateien sollten im Ordner REST-API/ liegen:
+REST-API/
+├── fraud_api.py            # Haupt-API mit FastAPI
+├── test_fraud_api.py       # Testskript mit Pytest für die API
+├── scaler.pkl              # Gespeicherter StandardScaler
+├── xgboost_model.pkl       # Gespeichertes XGBoost-Modell
+├── feature_names.pkl       # Liste der Feature-Namen
+├── autoencoder_model.h5    # Keras Autoencoder Modell
+
 ## REST-API zur automatisierten Betrugserkennung
 
 Dieses Projekt enthält eine voll funktionsfähige REST-Programmierschnittstelle (API), die es ermöglicht, Betrugswahrscheinlichkeiten für Kassentransaktionen automatisiert über HTTP-Requests zu berechnen – unabhängig von der Streamlit-Oberfläche.
@@ -7,10 +17,20 @@ Starten:
 py -m uvicorn fraud_api:app --reload
 
 ### 🔌 Endpoint
-POST /fraud-prediction
-Die API ist lokal erreichbar unter:
-http://127.0.0.1:8000/fraud-prediction
+REST-API Endpoint
+URL lokal: http://127.0.0.1:8000/fraud-prediction
+Dokumentation & Test-UI: http://127.0.0.1:8000/docs
 
+Diese Schnittstelle erwartet JSON-Daten im spezifizierten Format (siehe Beispiel weiter unten)
+und liefert eine Vorhersage, ob eine Transaktion betrügerisch ist, inklusive Wahrscheinlichkeiten und Erklärungen
+
+Um es auszuführen:
+- POST /fraud-prediction ausklappen
+- "Try it out" klicken
+- Einen Value eintragen
+- Execute klicken
+
+etwas weiter unten steht die Ausgabe
 
 ### Zweck der API
 
@@ -20,49 +40,81 @@ Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesp
 
 ### Beispiel-Request (Python)
 
-json_data = {
+{
   "transaction_header": {
-    "store_id": "c1f5d15e-baf6-41e2-890a-135c24cf4c32",
-    "cash_desk": 2,
+    "store_id": "d3892a9e-8cbc-4237-be9c-211435dc92c0",
+    "cash_desk": 5,
     "transaction_start": "2025-07-08T12:00:00",
-    "transaction_end": "2025-07-08T12:01:30",
-    "total_amount": 42.75,
+    "transaction_end": "2025-07-08T12:05:20",
+    "total_amount": 44.25,
     "payment_medium": "CASH",
     "customer_feedback": 4
   },
   "transaction_lines": [
     {
       "id": 1,
-      "product_id": "f20c1a10-3c51-4a91-9f80-4563a7e157bc",
+      "product_id": "9e7c9dba-db45-449c-a057-e80b3ef77426",
       "timestamp": "2025-07-08T12:00:10",
       "pieces_or_weight": 1,
-      "sales_price": 18.50,
-      "was_voided": false,
+      "sales_price": 20,
+      "was_voided": true,
       "camera_product_similar": true,
-      "camera_certainty": 0.6
+      "camera_certainty": 0.65
     },
     {
       "id": 2,
-      "product_id": "87412601-4aa6-4c00-84f2-5f3ad2aa67cd",
+      "product_id": "d542da73-8f5b-4ac7-840a-c67fa3eb2885",
       "timestamp": "2025-07-08T12:00:45",
       "pieces_or_weight": 1,
       "sales_price": 24.25,
       "was_voided": false,
       "camera_product_similar": true,
-      "camera_certainty": 0.65
+      "camera_certainty": 0.05
     }
   ]
 }
 
+Erwartete Ausgabe
+
 {
   "version": "1.2.3",
   "is_fraud": true,
-  "fraud_proba": 0.823479,
-  "estimated_damage": 9.53,
+  "fraud_proba": 0.56223,
+  "estimated_damage": 9.86,
   "explanation": {
     "human_readable_reason": "Low camera certainty on products; High transaction amount",
-    "offending_products": ["PERSONAL CARE"]
+    "offending_products": [
+      "PERSONAL CARE"
+    ]
   }
 }
+
+API Testen mit test_fraud_api.py
+Das Testskript test_fraud_api.py enthält automatisierte Tests, die überprüfen, ob die API erwartungsgemäß auf Anfragen reagiert.
+
+Nutzung:
+Stelle sicher, dass die REST-API nicht gestartet wurde. Der Test startet es von selbst und prüft ob es funktioniert.
+
+Testen der API
+Die REST-API kann sowohl automatisiert als auch manuell getestet werden:
+
+Automatisierte Tests:
+Es liegt ein einfaches Testskript (test_fraud_api.py) bei, das mit pytest ausgeführt werden kann, um die Funktionalität der API programmgesteuert zu überprüfen.
+
+Manueller Test über Postman:
+Alternativ kann die API auch manuell getestet werden, z.B. mit Postman. Hierfür einfach einen POST-Request an den Endpoint
+http://127.0.0.1:8000/fraud-prediction
+mit entsprechendem JSON-Payload senden.
+
+Starte die Tests mit:
+py -m pytest test_fraud_api.py
+Das Skript sendet Beispielanfragen an die API-Funktion und vergleicht die Antwort mit den Erwartungen.
+Pürft, ob die API mit HTTP 200 antwortet.
+
+
+Zweck:
+Sicherstellen, dass die API korrekt funktioniert und keine Fehler wirft.
+
+Automatisierte Qualitätssicherung vor Deployment oder Abgabe.
 
 
