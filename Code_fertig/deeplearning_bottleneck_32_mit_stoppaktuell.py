@@ -181,12 +181,6 @@ print("Mit Autoencoder-Features:", X_enhanced.shape[1])
 #files.download("df_mit_autoencoder_features_bottleneck_32.csv")
 
 
-
-# =========================================================================
-# KORRIGIERTER BLOCK FÜR XGBOOST-TRAINING UND SPEICHERN
-# =========================================================================
-
-# X_bottleneck und y sollten aus den vorherigen Zellen bereits existieren
 # df ist der ursprüngliche DataFrame vor der Erweiterung
 bottleneck_df = pd.DataFrame(X_bottleneck, columns=[f'ae_feat_{i}' for i in range(X_bottleneck.shape[1])])
 
