@@ -42,7 +42,7 @@ Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesp
 
 {
   "transaction_header": {
-    "store_id": "c1f5d15e-baf6-41e2-890a-135c24cf4c32",
+    "store_id": "d3892a9e-8cbc-4237-be9c-211435dc92c0",
     "cash_desk": 5,
     "transaction_start": "2025-07-08T12:00:00",
     "transaction_end": "2025-07-08T12:05:20",
@@ -53,7 +53,7 @@ Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesp
   "transaction_lines": [
     {
       "id": 1,
-      "product_id": "f20c1a10-3c51-4a91-9f80-4563a7e157bc",
+      "product_id": "9e7c9dba-db45-449c-a057-e80b3ef77426",
       "timestamp": "2025-07-08T12:00:10",
       "pieces_or_weight": 1,
       "sales_price": 20,
@@ -63,7 +63,7 @@ Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesp
     },
     {
       "id": 2,
-      "product_id": "87412601-4aa6-4c00-84f2-5f3ad2aa67cd",
+      "product_id": "d542da73-8f5b-4ac7-840a-c67fa3eb2885",
       "timestamp": "2025-07-08T12:00:45",
       "pieces_or_weight": 1,
       "sales_price": 24.25,
