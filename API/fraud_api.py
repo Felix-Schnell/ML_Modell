@@ -14,7 +14,9 @@ import shap
 # === Konfiguration ===
 app = FastAPI()
 API_VERSION = "1.7.0_final_sync"
-THRESHOLD = 0.2 # Korrekter Schwellenwert aus dem Training
+THRESHOLD = 0.65 # Variable. Indem man den Wert anpasst bekommt man eventuell mehr anzeigen als fraud oder nicht. Wichtig eine Balance zu finden was sie haben wollen
+# Zu hoch -> Nur definitive Fraud fälle und man verpasst gegebenfalls neue Betrugsmaschen
+# Zu niedrig -> mehr FP
 
 # === Globale Variablen für Modelle und Daten ===
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
