@@ -78,15 +78,13 @@ Die REST-API ist speziell dafür vorgesehen, **automatisch und maschinell angesp
 Erwartete Ausgabe
 
 {
-  "version": "1.2.3",
+  "version": "1.7.0_final_sync",
   "is_fraud": true,
-  "fraud_proba": 0.56223,
+  "fraud_proba": 0.814195,
   "estimated_damage": 9.86,
   "explanation": {
-    "human_readable_reason": "Low camera certainty on products; High transaction amount",
-    "offending_products": [
-      "PERSONAL CARE"
-    ]
+    "human_readable_reason": "'has_cash_payment' hatte mit einem Wert von 3.07 den stärksten Einfluss auf die Betrugswahrscheinlichkeit.",
+    "offending_products": []
   }
 }
 
