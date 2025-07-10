@@ -225,8 +225,7 @@ def predict_fraud(payload: TransactionRequest):
                 explanation = Explanation(human_readable_reason=final_reason, offending_products=[])
             except Exception as shap_error:
                 explanation = Explanation(
-                    human_readable_reason=f"Fraud indicators detected. (SHAP explanation failed: {shap_error})",
-                    offending_products=[]
+                    human_readable_reason=f"Fraud indicators detected. (SHAP explanation failed: {shap_error})"
                 )
 
         return PredictionResponse(
