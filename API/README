@@ -9,6 +9,8 @@ REST-API/
 ├── autoencoder_model.h5    # Keras Autoencoder Modell
 ├── store.csv
 ├── products.csv
+├── predict_on_csv.py
+├── df_model_ready_test.csv
 ## REST-API zur automatisierten Betrugserkennung
 
 Dieses Projekt enthält eine voll funktionsfähige REST-Programmierschnittstelle (API), die es ermöglicht, Betrugswahrscheinlichkeiten für Kassentransaktionen automatisiert über HTTP-Requests zu berechnen – unabhängig von der Streamlit-Oberfläche.
