@@ -71,7 +71,6 @@ class TransactionRequest(BaseModel):
 
 class Explanation(BaseModel):
     human_readable_reason: str
-    offending_products: List[str]
 
 class PredictionResponse(BaseModel):
     version: str
@@ -222,11 +221,10 @@ def predict_fraud(payload: TransactionRequest):
                 top_feature_value = X_input.iloc[0, top_feature_idx]
                 final_reason = (f"'{top_feature_name}' hatte mit einem Wert von {top_feature_value:.2f} "
                                 f"den stärksten Einfluss auf die Betrugswahrscheinlichkeit.")
-                explanation = Explanation(human_readable_reason=final_reason, offending_products=[])
+                explanation = Explanation(human_readable_reason=final_reason)
             except Exception as shap_error:
                 explanation = Explanation(
-                    human_readable_reason=f"Fraud indicators detected. (SHAP explanation failed: {shap_error})",
-                    offending_products=[]
+                    human_readable_reason=f"Fraud indicators detected. (SHAP explanation failed: {shap_error})"
                 )
 
         return PredictionResponse(
