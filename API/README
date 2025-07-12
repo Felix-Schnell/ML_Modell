@@ -110,9 +110,9 @@ mit entsprechendem JSON-Payload senden.
 Starte die Tests mit:
 py -m pytest test_fraud_api.py
 Das Skript sendet Beispielanfragen an die API-Funktion und vergleicht die Antwort mit den Erwartungen.
-Pürft, ob die API mit HTTP 200 antwortet.
+Prüft, ob die API mit HTTP 200 antwortet.
 
-Hiermit wurde die CSV-erstellt, welche ausgibt um es sich um FRAUD oder nicht handel
+Hiermit wurde die CSV-erstellt, welche ausgibt, ob um es sich um FRAUD oder nicht handelt
 predict_on_csv.py
 
 
