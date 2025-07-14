@@ -181,6 +181,12 @@ print("Mit Autoencoder-Features:", X_enhanced.shape[1])
 #files.download("df_mit_autoencoder_features_bottleneck_32.csv")
 
 
+
+# =========================================================================
+# KORRIGIERTER BLOCK FÜR XGBOOST-TRAINING UND SPEICHERN
+# =========================================================================
+
+# X_bottleneck und y sollten aus den vorherigen Zellen bereits existieren
 # df ist der ursprüngliche DataFrame vor der Erweiterung
 bottleneck_df = pd.DataFrame(X_bottleneck, columns=[f'ae_feat_{i}' for i in range(X_bottleneck.shape[1])])
 
@@ -196,7 +202,22 @@ X_final_training = pd.concat([X_base_features.reset_index(drop=True), bottleneck
 
 # 4. Modell trainieren
 print("Starte finales XGBoost-Training...")
-model = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+
+# === FIX START ===
+
+if 'fraud_count' in locals() and fraud_count > 0:
+    scale_pos_weight = normal_count / fraud_count
+else:
+    scale_pos_weight = 1
+print(f"⚖️  Verwende scale_pos_weight: {scale_pos_weight:.2f}")
+
+
+model = XGBClassifier(
+    use_label_encoder=False,
+    eval_metric='logloss',
+    random_state=42,
+    scale_pos_weight=scale_pos_weight
+)
 # y existiert bereits aus der Zellenausführung weiter oben
 model.fit(X_final_training, y)
 print("XGBoost-Training abgeschlossen.")
@@ -499,14 +520,19 @@ y_val_scores = model.predict_proba(X_val_for_prediction)[:, 1]
 # Precision, Recall, Thresholds berechnen
 precision, recall, thresholds = precision_recall_curve(y_val, y_val_scores) # Use the correct y_val from the re-split
 
-# F1-Werte berechnen
-f1_scores = 2 * (precision * recall) / (precision + recall + 1e-8)
-
-# Index mit bestem F1
-best_idx = f1_scores.argmax()
-best_threshold = thresholds[best_idx]
-
-print(f"✅ Best F1-Threshold gefunden: {best_threshold:.4f}")
+# === NEU: Schwellenwert für eine Mindest-Precision von 85% finden ===
+# Finde den ersten Index, bei dem die Precision >= 0.85 ist
+try:
+    high_precision_idx = np.where(precision >= 0.85)[0][0]
+    final_threshold = thresholds[high_precision_idx]
+    print(f"✅ Schwellenwert für ≥85% Precision gefunden: {final_threshold:.4f}")
+    print(f"   Bei diesem Wert: Precision = {precision[high_precision_idx]:.4f}, Recall = {recall[high_precision_idx]:.4f}")
+except IndexError:
+    # Fallback, falls 85% nie erreicht wird -> nimm den besten F1
+    print("⚠️ 85% Precision wurde nicht erreicht. Fallback auf besten F1-Score-Threshold.")
+    f1_scores = 2 * (precision * recall) / (precision + recall + 1e-8)
+    best_idx = f1_scores.argmax()
+    final_threshold = thresholds[best_idx]
 
 # Wahrscheinlichkeitsscores für Trainingsdaten
 y_scores = model.predict_proba(X)[:, 1]
@@ -789,3 +815,75 @@ nutzen_pro_kunde = netto_nutzen / anzahl_kunden_fraud
 print("💶 Durchschnittlicher wirtschaftlicher Nutzen:")
 print(f"➡️  Pro Kunden: {nutzen_pro_fall:.4f} €")
 print(f"➡️  Pro kunden_fraud:       {nutzen_pro_kunde:.4f} €")
+
+# =========================================================================
+# === NEU: Finale Vorhersage auf den Testdaten direkt nach dem Training ===
+# =========================================================================
+print("\n>>> Starte finale Vorhersage auf den Testdaten...")
+
+# --- 1. Testdaten laden ---
+try:
+    # Lade die Testdaten, die von deiner Pipeline erzeugt wurden
+    df_test = pd.read_csv("df_model_ready_test.csv")
+    print("Testdaten (df_model_ready_test.csv) erfolgreich geladen.")
+except FileNotFoundError:
+    print("FATALER FEHLER: Die Datei 'df_model_ready_test.csv' wurde nicht gefunden.")
+    exit()
+
+# --- 2. Daten für die Vorhersage vorbereiten ---
+# (Dieser Code spiegelt die korrigierte Logik wider)
+
+# a) Basis-Features für den Scaler vorbereiten
+base_features_needed = scaler.feature_names_in_.tolist()
+X_base_test = df_test.copy()
+
+# Sicherstellen, dass alle Spalten vorhanden sind und korrekt befüllt werden
+for col in base_features_needed:
+    if col not in X_base_test.columns:
+        X_base_test[col] = 0
+
+imputation_values = pd.Series(scaler.mean_, index=scaler.feature_names_in_)
+X_base_test[base_features_needed] = X_base_test[base_features_needed].fillna(imputation_values)
+X_base_test[base_features_needed] = X_base_test[base_features_needed].fillna(0)
+X_base_test = X_base_test[base_features_needed]
+
+# b) Autoencoder-Features für die Testdaten generieren
+X_base_test_scaled = scaler.transform(X_base_test)
+ae_features_test = encoder.predict(X_base_test_scaled)
+ae_feature_names = [f'ae_feat_{i}' for i in range(ae_features_test.shape[1])]
+ae_features_test_df = pd.DataFrame(ae_features_test, columns=ae_feature_names)
+
+# c) Korrekte Kombination: Unskalierte Basis-Features + Autoencoder-Features
+X_input_test = pd.concat([
+    X_base_test.reset_index(drop=True),
+    ae_features_test_df.reset_index(drop=True)
+], axis=1)
+
+# d) Spalten an das XGBoost-Modell anpassen
+final_feature_names = model.get_booster().feature_names
+for col in final_feature_names:
+    if col not in X_input_test.columns:
+        X_input_test[col] = 0
+X_input_test = X_input_test[final_feature_names]
+
+# --- 3. Finale Vorhersage treffen ---
+print(f"Treffe Vorhersagen mit dem optimalen Schwellenwert: {best_threshold:.4f}")
+
+# a) Wahrscheinlichkeiten vorhersagen
+probabilities_test = model.predict_proba(X_input_test)[:, 1]
+
+# b) Finale Entscheidung mit dem im Training ermittelten Schwellenwert treffen
+#    Die Variable 'best_threshold' existiert bereits aus dem Trainingsteil des Skripts!
+predictions_test = (probabilities_test > best_threshold).astype(int)
+
+# --- 4. Ergebnis speichern ---
+output_filename = "finale_vorhersage_testdaten.csv"
+df_test['fraud_prediction'] = predictions_test
+df_test.to_csv(output_filename, index=False)
+
+print("-" * 30)
+print(f"✅ Fertig! Ergebnisse wurden in '{output_filename}' gespeichert.")
+fraud_count = df_test['fraud_prediction'].sum()
+print(f"Davon als Betrug (1) erkannt: {fraud_count}")
+print(f"Davon als kein Betrug (0) erkannt: {len(df_test) - fraud_count}")
+print(">>> Skript erfolgreich beendet. <<<")
