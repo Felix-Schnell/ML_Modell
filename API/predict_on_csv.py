@@ -8,7 +8,7 @@ import os
 INPUT_CSV_PATH = "df_model_ready_test.csv"
 OUTPUT_CSV_PATH = "df_test_with_predictions.csv"
 MODEL_DIR = "." # Aktueller Ordner
-THRESHOLD = 0.65 # Derselbe Schwellenwert wie in der API
+THRESHOLD = 0.02 # Derselbe Schwellenwert wie in der API
 
 print(">>> Starte Batch-Vorhersage-Skript <<<")
 
@@ -44,9 +44,16 @@ X_base = df_test.copy()
 for col in base_features_needed:
     if col not in X_base.columns:
         X_base[col] = 0
+# --- 3. Daten für das Modell vorbereiten ---
+# ...
+# Fehlende Werte mit den Mittelwerten aus dem Training auffüllen, die im Scaler gespeichert sind.
+# Dies stellt sicher, dass die Testdaten exakt wie die Trainingsdaten behandelt werden.
+imputation_values = pd.Series(scaler.mean_, index=scaler.feature_names_in_)
+X_base[base_features_needed] = X_base[base_features_needed].fillna(imputation_values)
 
-# Fehlende Werte in den numerischen Features mit 0 füllen
-X_base[base_features_needed] = X_base[base_features_needed].fillna(0)
+# Als letzte Sicherheitsmaßnahme: Falls eine Spalte im Training nie NaNs hatte und hier doch, fülle mit 0
+X_base[base_features_needed] = X_base[base_features_needed].fillna(0) 
+
 X_base = X_base[base_features_needed] # Reihenfolge sicherstellen
 
 # --- 4. Vorhersage-Pipeline ausführen ---
@@ -61,7 +68,7 @@ ae_features_predicted = encoder.predict(X_base_scaled)
 # c) Basis-Features und Autoencoder-Features kombinieren
 ae_feature_names = [f'ae_feat_{i}' for i in range(ae_features_predicted.shape[1])]
 X_input = pd.concat([
-    pd.DataFrame(X_base_scaled, columns=base_features_needed, index=X_base.index),
+    pd.DataFrame(X_base, columns=base_features_needed, index=X_base.index), # <--- KORRIGIERT
     pd.DataFrame(ae_features_predicted, columns=ae_feature_names, index=X_base.index)
 ], axis=1)
 
