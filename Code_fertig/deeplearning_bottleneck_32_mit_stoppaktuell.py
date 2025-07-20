@@ -117,7 +117,7 @@ input_dim = X_scaled.shape[1]
 input_layer = Input(shape=(input_dim,))
 encoded = Dense(64, activation='relu')(input_layer)
 encoded = Dense(32, activation='relu')(encoded)
-bottleneck = Dense(32, activation='relu')(encoded)  # <–– 32 Neuronen
+bottleneck = Dense(16, activation='relu')(encoded)
 decoded = Dense(32, activation='relu')(bottleneck)
 decoded = Dense(64, activation='relu')(decoded)
 output_layer = Dense(input_dim, activation='linear')(decoded)
@@ -133,7 +133,7 @@ X_train, X_val = train_test_split(X_scaled, test_size=0.1, random_state=42)
 # === 3. EarlyStopping definieren ===
 early_stop = EarlyStopping(
     monitor='val_loss',
-    patience=15,
+    patience=10,
     restore_best_weights=True
 )
 
