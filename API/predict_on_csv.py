@@ -8,7 +8,7 @@ import os
 INPUT_CSV_PATH = "df_model_ready_test.csv"
 OUTPUT_CSV_PATH = "df_test_with_predictions.csv"
 MODEL_DIR = "." # Aktueller Ordner
-THRESHOLD = 0.02 # Derselbe Schwellenwert wie in der API
+THRESHOLD = 0.785 # Derselbe Schwellenwert wie in der API
 
 print(">>> Starte Batch-Vorhersage-Skript <<<")
 
