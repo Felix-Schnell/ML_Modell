@@ -14,7 +14,7 @@ import shap
 # === Konfiguration ===
 app = FastAPI()
 API_VERSION = "1.7.0_final_sync"
-THRESHOLD = 0.00085 # Variable.
+THRESHOLD = 0.785 # Variable.
 
 # === Globale Variablen für Modelle und Daten ===
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
